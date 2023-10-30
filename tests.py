@@ -6,25 +6,11 @@ fake = Faker()
 
 class TestCreate:
     @allure.title('Проверка создания курьера')
-    def test_check_create(self):
+    def test_check_create(self, login_user):
         url = "https://qa-scooter.praktikum-services.ru/api/v1/courier"
-        data = {
-            "login": fake.name(),
-            "password": fake.password(),
-            "firstName": fake.name()
-        }
+        data = login_user
         response = requests.post(url, json=data)
         assert response.status_code == 201 and response.text == '{"ok":true}'
-
-        login_url = "https://qa-scooter.praktikum-services.ru/api/v1/courier/login"
-        login_data = {
-            "login": data['login'],
-            "password": data['password']
-        }
-        login_response = requests.post(login_url, json=login_data)
-        id = login_response.json()['id']
-        delete_url = f"https://qa-scooter.praktikum-services.ru/api/v1/courier/:{id}"
-        requests.delete(delete_url)
 
     @allure.title('Проверка повторного создания курьера')
     def test_check_not_create_twice(self):
